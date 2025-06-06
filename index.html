@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWM AWM Love You</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        .love-btn {
+            padding: 15px 30px;
+            font-size: 24px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .love-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .love-btn:active {
+            transform: translateY(1px);
+        }
+
+        .love-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ff4757;
+            z-index: -1;
+            transition: transform 0.5s ease;
+            transform: scaleX(0);
+            transform-origin: right;
+        }
+
+        .love-btn:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .reaction {
+            position: absolute;
+            font-size: 24px;
+            pointer-events: none;
+            animation: floatAway 2s ease-out forwards;
+            opacity: 0;
+        }
+
+        .heart {
+            color: red;
+        }
+
+        .sparkle {
+            color: gold;
+        }
+
+        .flower {
+            color: #4CAF50;
+        }
+
+        .ending-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .ending-animation.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .ending-text {
+            color: white;
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transform: scale(0);
+            animation: growText 2s ease forwards 0.5s;
+        }
+
+        .putara {
+            font-size: 60px;
+            animation: pulse 1.5s infinite alternate, rotate 4s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes floatAway {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--endX), var(--endY)) rotate(var(--rotation)) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes growText {
+            0% {
+                transform: scale(0);
+            }
+            80% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                color: #ff6b6b;
+            }
+            100% {
+                transform: scale(1.2);
+                color: #ffcc00;
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="love-btn" id="loveBtn">AWM AWM Love You</button>
+        <div class="ending-animation" id="endingAnimation">
+            <div class="ending-text">AWM AWM Loves You So Much!</div>
+            <div class="putara">💖</div>
+        </div>
+    </div>
+
+    <script>
+        const loveBtn = document.getElementById('loveBtn');
+        const endingAnimation = document.getElementById('endingAnimation');
+        const reactions = ['❤️', '💖', '💕', '✨', '🌸', '💘', '💝', '💓'];
+        let clickCount = 0;
+        const clickThreshold = 10;
+
+        loveBtn.addEventListener('click', function(e) {
+            clickCount++;
+            
+            // Create multiple reaction elements (5 per click)
+            for (let i = 0; i < 5; i++) {
+                const reaction = document.createElement('div');
+                reaction.className = 'reaction';
+                
+                // Randomly select a reaction
+                const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
+                reaction.innerHTML = randomReaction;
+                
+                // Position the reaction near the click
+                const rect = e.target.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                reaction.style.left = `${x}px`;
+                reaction.style.top = `${y}px`;
+                
+                // Random angle between 0 and 360 degrees
+                const angle = Math.random() * Math.PI * 2;
+                // Random distance between 100 and 200px
+                const distance = 100 + Math.random() * 100;
+                
+                // Calculate end position based on angle
+                const endX = Math.cos(angle) * distance;
+                const endY = Math.sin(angle) * distance;
+                
+                // Random rotation between -45 and 45 degrees
+                const rotation = -45 + Math.random() * 90;
+                
+                // Set CSS variables for animation
+                reaction.style.setProperty('--endX', `${endX}px`);
+                reaction.style.setProperty('--endY', `${-endY}px`);
+                reaction.style.setProperty('--rotation', `${rotation}deg`);
+                
+                // Random animation delay for variety
+                reaction.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                // Add to container
+                this.parentElement.appendChild(reaction);
+                
+                // Remove reaction after animation
+                setTimeout(() => {
+                    reaction.remove();
+                }, 2000);
+            }
+            
+            // Change button text randomly
+            const texts = ['AWM AWM Love You', 'Click Me More!', 'You\'re Amazing!', 'So Much Love!', 'AWM AWM 💖'];
+            this.textContent = texts[Math.floor(Math.random() * texts.length)];
+            
+            // Check for ending condition
+            if (clickCount >= clickThreshold) {
+                showEndingAnimation();
+                clickCount = 0;
+            }
+        });
+
+        function showEndingAnimation() {
+            endingAnimation.classList.add('show');
+            
+            setTimeout(() => {
+                endingAnimation.classList.remove('show');
+                
+                // Reset button text
+                loveBtn.textContent = 'AWM AWM Love You';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
